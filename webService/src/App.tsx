@@ -204,7 +204,8 @@ function AppContent() {
       try {
         const token = localStorage.getItem("token") || "";
         const sendAlert = async (location: {latitude: number, longitude: number} | null) => {
-          await fetch("http://localhost:5000/api/alert", {
+          const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+          await fetch(`${API_BASE}/alert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

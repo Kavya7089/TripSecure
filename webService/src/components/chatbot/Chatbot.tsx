@@ -32,10 +32,10 @@ export const Chatbot: React.FC = () => {
     const loadingId = `load-${Date.now()}`;
     const loadingMsg: Message = { id: loadingId, sender: "loading", text: "" };
     setMessages((msgs) => [...msgs, loadingMsg]);
-
     try {
       const token = localStorage.getItem("token") || "";
-      const res = await fetch("http://localhost:5000/api/groq/chat", {
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${API_BASE}/groq/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
