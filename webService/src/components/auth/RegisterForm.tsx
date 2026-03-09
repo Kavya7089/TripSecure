@@ -10,7 +10,7 @@ import { User } from '../../types';
 import registerImage from '../../assest/ChatGPT Image Sep 14, 2025, 07_16_38 AM.png';
 
 interface RegisterFormProps {
-  onRegister: (user: User) => void;
+  onRegister?: (user: User) => void;
   onSwitchToLogin: () => void;
   onBackToHome?: () => void;
 }
@@ -40,8 +40,23 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegister, onSwitch
     setError('');
 
     try {
-      const user = await authService.register(formData);
-      onRegister(user);
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        role: formData.role.toUpperCase(), // TOURIST, FAMILY, AUTHORITY
+      };
+
+      const user = await authService.register(payload);
+      // If parent passed onRegister, call it
+      if (onRegister) {
+        onRegister(user);
+      }
+
+      // After successful registration, move to Login page (without navigation)
+      onSwitchToLogin();
+      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {

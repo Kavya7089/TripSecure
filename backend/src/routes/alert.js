@@ -2,11 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { panicAlert, geoFenceAlert, restrictedZoneAlert } = require("../controllers/alertController");
 const auth = require("../middleware/auth");
+const { sendAlertEmail } = require("../services/alertService");
+
+const User= require("../models/User");
+const sendEmail = require("../utils/sendEmail");// Your MongoDB User model
 
 // @desc    Panic Button (SOS) Alert
 // @route   POST /api/alerts/panic
 // @access  Private
-router.post("/panic", auth, panicAlert);
+
 
 // @desc    GeoFence Alert
 // @route   POST /api/alerts/geofence
@@ -17,5 +21,65 @@ router.post("/geofence", auth, geoFenceAlert);
 // @route   POST /api/alerts/restricted
 // @access  Private
 router.post("/restricted", auth, restrictedZoneAlert);
+// backend/routes/alertRoutes.js
+
+
+
+
+
+// Panic alert endpoint
+// router.post("/", async (req, res) => {
+//   try {
+//     const { userId, location, description } = req.body;
+
+//     if (!userId) return res.status(400).json({ message: "userId is required" });
+
+//     const alert = await Alert.create({
+//       user: userId,   // ✅ attach MongoDB userId here
+//       location,
+//       description,
+//     });
+
+//     res.json({ success: true, alert });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+// const { createAlert } = require("../controllers/alertController");
+
+
+const authMiddleware = require("../middleware/auth");
+
+router.post("/", authMiddleware, panicAlert);
+
+
+
+router.post("/alert", async (req, res) => {
+  try {
+    const { touristId, location } = req.body;
+
+    // Fetch user from MongoDB
+    const user = await User.findById(touristId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: "Tourist not found" });
+    }
+
+    // Send alert email including tourist email from DB
+    await sendAlertEmail(userId, location, user.email);
+
+    res.json({ success: true, message: "Alert email sent to admins" });
+  } catch (err) {
+    console.error("Error sending alert email:", err);
+    res.status(500).json({ success: false, error: "Failed to send email" });
+  }
+});
+
+
+
+
+
+
 
 module.exports = router;

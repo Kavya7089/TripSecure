@@ -1,6 +1,5 @@
 // controllers/touristController.js
-const User = require('../models/User');
-const Tourist = require('../models/Tourist');
+const supabase = require('../config/db');
 const { encryptJSON } = require('../services/encryptionService');
 const { uploadJSON } = require('../services/ipfsService');
 const { computeKycHash, issueTourist } = require('../services/blockchainService');
@@ -9,8 +8,9 @@ const { computeKycHash, issueTourist } = require('../services/blockchainService'
 async function registerTourist(req, res, next) {
   try {
     const { userId, walletAddress, kyc } = req.body;
-    const user = await User.findById(userId);
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    
+    const { data: user, error: userError } = await supabase.from('users').select('*').eq('id', userId).single();
+    if (userError || !user) return res.status(400).json({ message: 'User not found' });
 
     const enc = encryptJSON(kyc);
     const cid = await uploadJSON(enc);
@@ -19,16 +19,18 @@ async function registerTourist(req, res, next) {
 
     const blockchainId = await issueTourist(walletAddress, enc, validUntil);
 
-    const tourist = await Tourist.create({
-      user: user._id,
+    const { data: tourist, error: touristError } = await supabase.from('tourists').insert([{
+      userId: user.id,
       blockchainId,
       kycCid: cid,
       kycHash,
-      validUntil: new Date(validUntil * 1000),
+      validUntil: new Date(validUntil * 1000).toISOString(),
       active: true
-    });
+    }]).select().single();
 
-    res.status(201).json({ touristId: tourist._id, blockchainId, kycCid: cid });
+    if (touristError) throw touristError;
+
+    res.status(201).json({ touristId: tourist.id, blockchainId, kycCid: cid });
   } catch (err) {
     next(err);
   }

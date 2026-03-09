@@ -1,11 +1,12 @@
 // controllers/tripController.js
-const Trip = require("../models/Trip");
+const supabase = require('../config/db');
 
 // Create a trip
 async function createTrip(req, res, next) {
   try {
-    const trip = await Trip.create(req.body);
-    res.status(201).json(trip);
+    const { data, error } = await supabase.from('trips').insert([req.body]).select().single();
+    if (error) throw error;
+    res.status(201).json(data);
   } catch (err) {
     next(err);
   }
@@ -14,9 +15,12 @@ async function createTrip(req, res, next) {
 // Get trip by ID
 async function getTrip(req, res, next) {
   try {
-    const trip = await Trip.findById(req.params.id);
-    if (!trip) return res.status(404).json({ message: "Trip not found" });
-    res.json(trip);
+    const { data, error } = await supabase.from('trips').select('*').eq('id', req.params.id).single();
+    if (error) {
+      if (error.code === 'PGRST116') return res.status(404).json({ message: "Trip not found" });
+      throw error;
+    }
+    res.json(data);
   } catch (err) {
     next(err);
   }
@@ -25,9 +29,10 @@ async function getTrip(req, res, next) {
 // Update trip
 async function updateTrip(req, res, next) {
   try {
-    const trip = await Trip.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!trip) return res.status(404).json({ message: "Trip not found" });
-    res.json(trip);
+    const { data, error } = await supabase.from('trips').update(req.body).eq('id', req.params.id).select().single();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ message: "Trip not found" });
+    res.json(data);
   } catch (err) {
     next(err);
   }

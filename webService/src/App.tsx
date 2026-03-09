@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LoginForm } from './components/auth/LoginForm';
 import { RegisterForm } from './components/auth/RegisterForm';
+import { Chatbot } from './components/chatbot/Chatbot';
+import { AlertCircle } from 'lucide-react';
 import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
 import { TouristDashboard } from './components/dashboard/TouristDashboard';
@@ -28,6 +30,9 @@ import { authService } from './lib/auth';
 import { wsService } from './lib/websocket';
 import { databaseService } from './lib/database';
 import { sampleTrips, sampleSafetyAlerts } from './lib/sample-data';
+
+
+
 import { User, PriorityMember, RiskArea, RiskAreaAlert } from './types';
 
 function AppContent() {
@@ -194,6 +199,42 @@ function AppContent() {
     setRiskAreaAlerts(alerts => alerts.filter(alert => alert.id !== alertId));
   };
 
+  const handlePanic = async () => {
+    if (window.confirm("Are you sure you want to trigger a panic alert?")) {
+      try {
+        const token = localStorage.getItem("token") || "";
+        const sendAlert = async (location: {latitude: number, longitude: number} | null) => {
+          await fetch("http://localhost:5000/api/alert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({
+              location,
+              description: "Web SOS Triggered"
+            })
+          });
+        };
+
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (pos) => {
+            await sendAlert({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+            alert("🚨 Panic alert sent successfully!");
+          }, async () => {
+            await sendAlert(null);
+            alert("🚨 Panic alert sent (without location).");
+          });
+        } else {
+          await sendAlert(null);
+          alert("🚨 Panic alert sent (without location).");
+        }
+      } catch (err) {
+        alert("Failed to send Panic Alert.");
+      }
+    }
+  };
+
   const renderDashboard = () => {
     if (!user) return null;
 
@@ -261,6 +302,8 @@ function AppContent() {
         return <Profile />;
       case 'notifications':
         return <Notifications />;
+      case 'chatbot':
+        return <Chatbot />;
       default:
         return renderDashboard();
     }
@@ -315,10 +358,18 @@ function AppContent() {
       <div className="flex">
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
         
-        <main className="flex-1 bg-primary-200 dark:bg-secondary-600 p-6">
+        <main className="flex-1 bg-primary-200 dark:bg-secondary-600 p-6 relative">
           <PageTransition>
             {renderContent()}
           </PageTransition>
+          
+          <button 
+            onClick={handlePanic}
+            className="fixed bottom-8 right-8 w-16 h-16 bg-red-600 text-white rounded-full shadow-2xl hover:bg-red-700 flex items-center justify-center z-50 transition-transform transform hover:-translate-y-1 hover:scale-110"
+            title="Emergency SOS"
+          >
+            <AlertCircle className="w-8 h-8" />
+          </button>
         </main>
       </div>
     </div>

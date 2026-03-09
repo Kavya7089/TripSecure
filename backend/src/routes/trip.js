@@ -19,4 +19,5 @@ router.get("/:id", auth, getTrip);
 // @access  Private
 router.put("/:id", auth, updateTrip);
 
+
 module.exports = router;

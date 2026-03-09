@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { Users, MapPin, AlertTriangle, Clock, Shield, Download } from 'lucide-react';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
-
+import { useState } from 'react';
 interface AnalyticsData {
   incidents: {
     total: number;
@@ -203,51 +203,35 @@ export const Analytics: React.FC = () => {
       {selectedMetric === 'incidents' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Incidents by Type */}
-          <Card className="p-6 bg-opacity-55 border-none">
+          <Card className="p-6 bg-opacity-55 border-none h-96">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Incidents by Type</h3>
-            <div className="space-y-3">
-              {Object.entries(analyticsData.incidents.byType).map(([type, count]) => (
-                <div key={type} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">{type}</span>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-secondary-500 h-2 rounded-full"
-                        style={{ width: `${(count / analyticsData.incidents.total) * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white w-8">{count}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ResponsiveContainer width="100%" height="80%">
+              <PieChart>
+                <Pie 
+                  data={Object.entries(analyticsData.incidents.byType).map(([name, value]) => ({ name, value }))} 
+                  dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label
+                >
+                  {Object.entries(analyticsData.incidents.byType).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'][index % 6]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </Card>
 
           {/* Incidents by Severity */}
-          <Card className="p-6 bg-opacity-55 border-none">
+          <Card className="p-6 bg-opacity-55 border-none h-96">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Incidents by Severity</h3>
-            <div className="space-y-3">
-              {Object.entries(analyticsData.incidents.bySeverity).map(([severity, count]) => (
-                <div key={severity} className="flex items-center justify-between">
-                  <span className={`text-sm font-medium ${getSeverityColor(severity)}`}>
-                    {severity.toUpperCase()}
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full ${
-                          severity === 'critical' ? 'bg-red-500' :
-                          severity === 'high' ? 'bg-orange-500' :
-                          severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}
-                        style={{ width: `${(count / analyticsData.incidents.total) * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white w-8">{count}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ResponsiveContainer width="100%" height="80%">
+              <BarChart data={Object.entries(analyticsData.incidents.bySeverity).map(([name, value]) => ({ name, value }))}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </Card>
         </div>
       )}
@@ -326,24 +310,17 @@ export const Analytics: React.FC = () => {
           </Card>
 
           {/* Monthly Trend */}
-          <Card className="p-6 bg-opacity-55 border-none">
+          <Card className="p-6 bg-opacity-55 border-none h-96">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Incident Trend</h3>
-            <div className="space-y-2">
-              {analyticsData.incidents.monthly.map((month) => (
-                <div key={month.month} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{month.month}</span>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-secondary-500 h-2 rounded-full"
-                        style={{ width: `${(month.count / Math.max(...analyticsData.incidents.monthly.map(m => m.count))) * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white w-8">{month.count}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ResponsiveContainer width="100%" height="80%">
+              <LineChart data={analyticsData.incidents.monthly}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
           </Card>
         </div>
       )}

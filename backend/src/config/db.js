@@ -1,14 +1,16 @@
-const mongoose = require('mongoose');
-const { mongoUri } = require('./index');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-async function connectDB() {
-  if (!mongoUri) throw new Error('MONGO_URI not set');
-  console.log("Connecting to MongoDB:", mongoUri);
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  console.log('MongoDB connected');
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.warn('SUPABASE_URL or SUPABASE_ANON_KEY not set in environment.');
 }
 
-module.exports = connectDB;
+const supabase = createClient(
+  supabaseUrl || 'https://xyzcompany.supabase.co',
+  supabaseKey || 'public-anon-key'
+);
+
+module.exports = supabase;

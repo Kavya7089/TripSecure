@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { authService } from '../../lib/auth';
 import { User } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 // Add your image import here (replace with your actual image path)
 import loginImage from '../../assest/ChatGPT Image Sep 14, 2025, 07_14_46 AM.png';
@@ -38,6 +39,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onSwitchToRegiste
       setIsLoading(false);
     }
   };
+  
 
   const demoAccounts = [
     { email: 'tourist@demo.com', role: 'Tourist', password: 'demo123' },

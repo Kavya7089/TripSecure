@@ -13,17 +13,44 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use your location to ensure your safety",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Required for background location alerts",
+        "NSMicrophoneUsageDescription": "This app uses the microphone to record audio for emergency situations",
+        "NSLocationAlwaysUsageDescription": "Required for background location alerts",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "RECORD_AUDIO",
+          "ACCESS_COARSE_LOCATION",
+          "FOREGROUND_SERVICE",
+          "ACCESS_FINE_LOCATION",
+          "ACCESS_BACKGROUND_LOCATION",
+          "ACCESS_COARSE_LOCATION",
+          "ACCESS_FINE_LOCATION",
+          "ACCESS_BACKGROUND_LOCATION"
+        ]
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.smarttouristmobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9ec76407-e8b6-448f-b33f-b47fd3835b6b"
+      }
+    },
+    "owner": "kavya7089"
   }
 }

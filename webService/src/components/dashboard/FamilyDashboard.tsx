@@ -5,6 +5,13 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { useAppStore } from '../../lib/store';
 import { sampleTrips } from '../../lib/sample-data';
+import { authService } from "../../lib/auth";
+
+const user = authService.getCurrentUser();
+if (!user) {
+  window.location.href = "/login"; // redirect if not logged in
+}
+
 
 export const FamilyDashboard: React.FC = () => {
   const { user, safetyAlerts } = useAppStore();

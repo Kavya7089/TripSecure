@@ -50,14 +50,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   setConnection: (connected) => set({ isConnected: connected }),
   
-  updateTripLocation: (tripId, location) => set((state) => ({
-    trips: state.trips.map(trip =>
-      trip.id === tripId
-        ? { ...trip, currentLocation: location }
-        : trip
-    ),
-    activeTrip: state.activeTrip?.id === tripId
-      ? { ...state.activeTrip, currentLocation: location }
-      : state.activeTrip
-  })),
+  // ... inside create<AppState>
+updateTripLocation: (tripId, location) => set((state) => {
+  const updatedTrips = state.trips.map(trip =>
+    trip.id === tripId ? { ...trip, currentLocation: location } : trip
+  );
+
+  const updatedActiveTrip = state.activeTrip?.id === tripId
+    ? { ...state.activeTrip, currentLocation: location }
+    : state.activeTrip;
+
+  return {
+    trips: updatedTrips,
+    activeTrip: updatedActiveTrip,
+  };
+}),
 }));

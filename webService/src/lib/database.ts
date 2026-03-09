@@ -1,7 +1,7 @@
 // frontend/services/database.ts
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000/api"; // change if deployed
+const API_BASE = "http://localhost:5000/api"; // backend URL
 
 class DatabaseService {
   // User operations
@@ -32,18 +32,24 @@ class DatabaseService {
 
   // Trip operations
   async createTrip(trip: any): Promise<string> {
-    const res = await axios.post(`${API_BASE}/trip`, trip);
-    return res.data.id;
-  }
+  const res = await axios.post(`${API_BASE}/trip`, trip, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } // if using JWT
+  });
+  return res.data.id;
+}
 
-  async getTripsByUserId(userId: string): Promise<any[]> {
-    const res = await axios.get(`${API_BASE}/trip/${userId}`);
-    return res.data;
-  }
+async getTripsByUserId(userId: string): Promise<any[]> {
+  const res = await axios.get(`${API_BASE}/trip/${userId}`, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+  });
+  return res.data;
+}
 
-  async updateTrip(id: string, updates: any): Promise<void> {
-    await axios.put(`${API_BASE}/trip/${id}`, updates);
-  }
+async updateTrip(id: string, updates: any): Promise<void> {
+  await axios.put(`${API_BASE}/trip/${id}`, updates, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+  });
+}
 
   // Alert operations
   async createPanicAlert(alert: any): Promise<any> {

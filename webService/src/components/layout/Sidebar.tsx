@@ -14,7 +14,8 @@ import {
   Bell,
   User,
   FileText,
-  CheckCircle
+  CheckCircle,
+  MessageCircle
 } from 'lucide-react';
 import { useAppStore } from '../../lib/store';
 
@@ -48,6 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) =>
           { id: 'expenses', label: 'Expenses', icon: CreditCard },
           { id: 'alerts', label: 'Safety Alerts', icon: AlertTriangle },
           { id: 'community', label: 'Community', icon: MessageSquare },
+          { id: 'chatbot', label: 'AI Chatbot', icon: MessageCircle },
         ];
       
       case 'family':
@@ -58,6 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) =>
           { id: 'priority-members', label: 'Priority Members', icon: UserCheck },
           { id: 'risk-alerts', label: 'Risk Alerts', icon: Bell },
           { id: 'alerts', label: 'Safety Alerts', icon: AlertTriangle },
+          { id: 'chatbot', label: 'AI Chatbot', icon: MessageCircle },
         ];
       
       case 'authority':

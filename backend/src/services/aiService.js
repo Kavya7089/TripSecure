@@ -1,10 +1,11 @@
-const axios = require('axios');
-const { aiUrl } = require('../config');
+// services/aiService.js
+const axios = require("axios");
 
-async function predictFeatures(features) {
-  if (!aiUrl) throw new Error('AI service URL not configured');
-  const res = await axios.post(`${aiUrl}/predict_from_features`, features, { timeout: 5000 });
-  return res.data;
+const AI_ENGINE_URL = "http://localhost:8001/predict";
+
+async function analyzeTrip(data) {
+  const response = await axios.post(AI_ENGINE_URL, data);
+  return response.data;
 }
 
-module.exports = { predictFeatures };
+module.exports = { analyzeTrip };
