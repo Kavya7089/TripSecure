@@ -1,7 +1,7 @@
 // frontend/services/database.ts
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api"; // backend URL
+const API_BASE = import.meta.env.VITE_API_URL || "https://trip-secure-backend.vercel.app/api"; // backend URL
 
 class DatabaseService {
   // User operations

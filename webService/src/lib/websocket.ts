@@ -4,7 +4,7 @@ import { SafetyAlert, Location, PanicAlert } from '../types';
 class WebSocketService {
   private ws: WebSocket | null = null;
   private reconnectTimer: NodeJS.Timeout | null = null;
-  private readonly url = 'wss://api.tourist-safety.demo/ws';
+  private readonly url = 'wss://api.tourist-safety.demo/ws';  
 
   connect() {
     // Mock WebSocket connection for demo

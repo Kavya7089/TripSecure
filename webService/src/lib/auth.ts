@@ -11,7 +11,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<User> {
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+    const API_BASE = import.meta.env.VITE_API_URL || "https://trip-secure-backend.vercel.app/api";
     const response = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -34,7 +34,7 @@ export class AuthService {
     role?: string;
     phone?: string;
   }): Promise<User> {
-    const response = await fetch("http://localhost:5000/api/auth/register", {
+    const response = await fetch("https://trip-secure-backend.vercel.app/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
@@ -54,7 +54,7 @@ export class AuthService {
     if (!token) return null;
 
     // fetch profile from backend
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const response = await fetch("https://trip-secure-backend.vercel.app/api/auth/login", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
