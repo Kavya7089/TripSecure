@@ -4,8 +4,6 @@ const { panicAlert, geoFenceAlert, restrictedZoneAlert } = require("../controlle
 const auth = require("../middleware/auth");
 const { sendAlertEmail } = require("../services/alertService");
 
-const User= require("../models/User");
-const sendEmail = require("../utils/sendEmail");// Your MongoDB User model
 
 // @desc    Panic Button (SOS) Alert
 // @route   POST /api/alerts/panic
@@ -53,28 +51,6 @@ router.post("/restricted", auth, restrictedZoneAlert);
 const authMiddleware = require("../middleware/auth");
 
 router.post("/", authMiddleware, panicAlert);
-
-
-
-router.post("/alert", async (req, res) => {
-  try {
-    const { touristId, location } = req.body;
-
-    // Fetch user from MongoDB
-    const user = await User.findById(touristId);
-    if (!user) {
-      return res.status(404).json({ success: false, error: "Tourist not found" });
-    }
-
-    // Send alert email including tourist email from DB
-    await sendAlertEmail(userId, location, user.email);
-
-    res.json({ success: true, message: "Alert email sent to admins" });
-  } catch (err) {
-    console.error("Error sending alert email:", err);
-    res.status(500).json({ success: false, error: "Failed to send email" });
-  }
-});
 
 
 

@@ -12,7 +12,6 @@ const tripRoutes = require('./routes/trip');
 const alertRoutes = require('./routes/alert');
 const errorHandler = require('./middleware/errorHandler');
 const userRoutes = require("./routes/userRoutes");
-const blockchainService = require('./services/blockchainService');
 
 
 const app = express();
@@ -28,7 +27,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tourist', touristRoutes);
 app.use('/api/trip', tripRoutes);
 app.use("/api/users", userRoutes);
-app.use('/api/blockchain', blockchainService);
 app.use('/trips', tripRoutes);
 app.use('/api/alert', alertRoutes);
 
