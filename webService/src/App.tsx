@@ -24,7 +24,7 @@ import { Profile } from './components/profile/Profile';
 import { Notifications } from './components/notifications/Notifications';
 import { SafetyAlerts } from './components/alerts/SafetyAlerts';
 import { PageTransition } from './components/PageTransition';
-import { ThemeProvider, useTheme } from './lib/theme';
+import { ThemeProvider } from './lib/theme';
 import { useAppStore } from './lib/store';
 import { authService } from './lib/auth';
 import { wsService } from './lib/websocket';
@@ -171,10 +171,8 @@ function AppContent() {
     }
   };
 
-  // Risk Area Alert handlers
   const handleAcknowledgeAlert = async (alertId: string) => {
     try {
-      // await databaseService.acknowledgeRiskAreaAlert(alertId);
       setRiskAreaAlerts(alerts => 
         alerts.map(alert => 
           alert.id === alertId 
