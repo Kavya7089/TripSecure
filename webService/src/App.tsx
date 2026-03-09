@@ -52,15 +52,7 @@ function AppContent() {
 
   const initializeApp = async () => {
     try {
-      // Initialize database connection
-      await databaseService.connect({
-        server: 'localhost',
-        database: 'TripSecure',
-        username: 'sa',
-        password: 'YourPassword123!',
-        port: 1433,
-        encrypt: false
-      });
+      // backend connection is handled per-request via API_BASE
 
       const currentUser = await authService.getCurrentUser();
       if (currentUser) {
@@ -80,16 +72,16 @@ function AppContent() {
   const loadUserData = async (userId: string) => {
     try {
       // Load priority members
-      const members = await databaseService.getPriorityMembers(userId);
-      setPriorityMembers(members);
+      // const members = await databaseService.getPriorityMembers(userId);
+      // setPriorityMembers(members);
 
       // Load risk areas
-      const areas = await databaseService.getRiskAreas();
-      setRiskAreas(areas);
+      // const areas = await databaseService.getRiskAreas();
+      // setRiskAreas(areas);
 
       // Load risk area alerts
-      const alerts = await databaseService.getRiskAreaAlerts(userId);
-      setRiskAreaAlerts(alerts);
+      // const alerts = await databaseService.getRiskAreaAlerts(userId);
+      // setRiskAreaAlerts(alerts);
     } catch (error) {
       console.error('Failed to load user data:', error);
     }
@@ -146,7 +138,7 @@ function AppContent() {
         userId: user?.id || ''
       };
       
-      await databaseService.createPriorityMember(newMember);
+      // await databaseService.createPriorityMember(newMember);
       setPriorityMembers([...priorityMembers, newMember]);
     } catch (error) {
       console.error('Failed to add priority member:', error);
@@ -155,10 +147,10 @@ function AppContent() {
 
   const handleUpdatePriorityMember = async (id: string, updates: Partial<PriorityMember>) => {
     try {
-      await databaseService.query(
-        'UPDATE priority_members SET name = ?, phone = ?, email = ?, relationship = ?, has_location_access = ? WHERE id = ?',
-        [updates.name, updates.phone, updates.email, updates.relationship, updates.hasLocationAccess, id]
-      );
+      // await databaseService.query(
+      //   'UPDATE priority_members SET name = ?, phone = ?, email = ?, relationship = ?, has_location_access = ? WHERE id = ?',
+      //   [updates.name, updates.phone, updates.email, updates.relationship, updates.hasLocationAccess, id]
+      // );
       
       setPriorityMembers(members => 
         members.map(member => 
@@ -172,7 +164,7 @@ function AppContent() {
 
   const handleDeletePriorityMember = async (id: string) => {
     try {
-      await databaseService.deletePriorityMember(id);
+      // await databaseService.deletePriorityMember(id);
       setPriorityMembers(members => members.filter(member => member.id !== id));
     } catch (error) {
       console.error('Failed to delete priority member:', error);
@@ -182,7 +174,7 @@ function AppContent() {
   // Risk Area Alert handlers
   const handleAcknowledgeAlert = async (alertId: string) => {
     try {
-      await databaseService.acknowledgeRiskAreaAlert(alertId);
+      // await databaseService.acknowledgeRiskAreaAlert(alertId);
       setRiskAreaAlerts(alerts => 
         alerts.map(alert => 
           alert.id === alertId 
